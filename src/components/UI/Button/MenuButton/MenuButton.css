@@ -1,0 +1,23 @@
+.MenuButton {
+    margin: 10px 0;
+    box-sizing: border-box;
+    display: block;
+    width: 100%;
+
+    border: none;
+    color: red;
+    outline: none;
+    cursor: pointer;
+    font: inherit;
+    padding: 10px;
+    margin: 10px;
+    font-weight: bold;
+}
+
+.MenuButton a {
+    color: white;
+    text-decoration: none;
+    width: 100%;
+    box-sizing: border-box;
+    display: block;
+}

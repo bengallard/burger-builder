@@ -18,6 +18,14 @@ const buildControls = (props) => (
             <BuildControl 
                 key={ctrl.label} 
                 label={ctrl.label}
+                quantity={() => {
+                    Object.entries(props.ingredients)
+                    .map((igKey, idx) => {
+                        return (
+                            igKey == ctrl.key ? 1 : 0
+                        )
+                    })
+                }}
                 added={() => props.ingredientAdded(ctrl.type)} 
                 removed={() => props.ingredientRemoved(ctrl.type)}
                 disabled={props.disabled[ctrl.type]} />

@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { BrowserRouter, Route, Switch } from 'react-router-dom'
 
 import Aux from '../../hoc/Aux/Aux'
 import Burger from '../../components/Burger/Burger'
@@ -8,6 +9,7 @@ import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary'
 import Spinner from '../../components/UI/Spinner/Spinner'
 import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler'
 import axios from '../../axios-orders'
+import Checkout from '../Checkout/Checkout'
 
 const INGREDIENT_PRICES = {
     salad: 0.5,
@@ -28,7 +30,8 @@ class BurgerBuilder extends Component {
         purchaseable: false,
         purchasing: false,
         loading: false,
-        error: false
+        error: false,
+        purchased: false
     }
 
     componentWillMount () {
@@ -110,7 +113,7 @@ class BurgerBuilder extends Component {
         }
         axios.post('/orders.json', order)
             .then(response => {
-                this.setState({ loading: false, purchasing: false })
+                this.setState({ loading: false, purchasing: false, purchased: true })
             })
             .catch(error => {
                 this.setState({ loading: false, purchasing: false })
@@ -123,6 +126,11 @@ class BurgerBuilder extends Component {
         }
         for (let key in disabledInfo) {
             disabledInfo[key] = disabledInfo[key] <= 0
+        }
+
+        let cart = null
+        if (this.state.purchased) {
+            cart = <Checkout ingredients={this.state.ingredients} />
         }
 
         let orderSummary = null
@@ -151,12 +159,15 @@ class BurgerBuilder extends Component {
         }
         
         return (
-            <Aux>
-                <Modal show={this.state.purchasing} modalClosed={this.purchaseCancelHandler}>
-                    {orderSummary}
-                </Modal>
-                {burger}
-            </Aux>
+            <BrowserRouter>
+                <Aux>
+                    <Modal show={this.state.purchasing} modalClosed={this.purchaseCancelHandler}>
+                        {orderSummary}
+                    </Modal>
+                    {burger}
+                    <Route path="/burger-builder" component={Checkout} />
+                </Aux>
+            </BrowserRouter>
             )
     }
 }

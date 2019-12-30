@@ -117,7 +117,11 @@ class BurgerBuilder extends Component {
         //     .catch(error => {
         //         this.setState({ loading: false, purchasing: false })
         //     })
-        this.props.history.push('/checkout')
+        const ingredientSummary = Object.keys(this.state.ingredients)
+            .map(igKey => {
+                return '&' + igKey + '=' + this.state.ingredients[igKey]
+            } )
+        this.props.history.push('/checkout' + '=' + ingredientSummary.join(''))
     }
 
     render() {
@@ -144,10 +148,10 @@ class BurgerBuilder extends Component {
                 </Aux>
             )
             orderSummary = <OrderSummary 
-            ingredients={this.state.ingredients}
-            price={this.state.totalPrice}
-            purchaseCancelled={this.purchaseCancelHandler}
-            purchaseContinued={this.purchaseContinueHandler} />
+                ingredients={this.state.ingredients}
+                price={this.state.totalPrice}
+                purchaseCancelled={this.purchaseCancelHandler}
+                purchaseContinued={this.purchaseContinueHandler} />
         }
         if (this.state.loading) {
             orderSummary = <Spinner />

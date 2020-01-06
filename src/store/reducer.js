@@ -7,8 +7,7 @@ const initialState = {
         'cheese': 0,
         'meat': 0
     },
-    totalPrice: 4,
-    purchasable: false
+    totalPrice: 4
 }
 
 const INGREDIENT_PRICES = {
@@ -19,62 +18,28 @@ const INGREDIENT_PRICES = {
 }
 
 const reducer = (state = initialState, action) => {
-    const updatePurchaseState = (ingredients) => {
-        const sum = Object.keys(ingredients)
-            .map(igKey => {
-                return ingredients[igKey]
-            })
-            .reduce((sum, el) => {
-                return sum + el
-            }, 0)
-
-            return sum > 0
-    }
-
     switch (action.type) {
         case actionType.ADD_INGREDIENT: 
-        {
-            const oldCount = state.ingredients[action.ingredient]
-            const updatedCount = oldCount + 1
-            const updatedIngredients = {
-                ...state.ingredients
-            }
-            updatedIngredients[action.ingredient] = updatedCount
-            const priceAddition = INGREDIENT_PRICES[action.ingredient]
-            const oldPrice = state.totalPrice
-            const newPrice = oldPrice + priceAddition
-            const purchasable = updatePurchaseState(updatedIngredients)
             return {
                 ...state,
-                ingredients: updatedIngredients,
-                totalPrice: newPrice,
-                purchasable: purchasable
+                ingredients: {
+                    ...state.ingredients,
+                    [action.ingredient]: state.ingredients[action.ingredient] + 1
+                },
+                totalPrice: state.totalPrice + INGREDIENT_PRICES[action.ingredient]
             }
-        }
         case actionType.REMOVE_INGREDIENT: 
-        {
-            const oldCount = state.ingredients[action.ingredient]
-            if (oldCount <= 0) { 
-                return 
-            }
-            const updatedCount = oldCount - 1
-            const updatedIngredients = {
-                ...state.ingredients
-            }
-            updatedIngredients[action.ingredient] = updatedCount
-            const priceDeduction = INGREDIENT_PRICES[action.ingredient]
-            const oldPrice = state.totalPrice
-            const newPrice = oldPrice - priceDeduction
-            const purchasable = updatePurchaseState(updatedIngredients)
-            return {
-                ...state,
-                totalPrice: newPrice, 
-                ingredients: updatedIngredients,
-                purchasable: purchasable
-            }
+        return {
+            ...state,
+            ingredients: {
+                ...state.ingredients,
+                [action.ingredient]: state.ingredients[action.ingredient] - 1
+            },
+            totalPrice: state.totalPrice - INGREDIENT_PRICES[action.ingredient]
         }
+        default:
+            return state
     }
-    return state
 }
 
 export default reducer
